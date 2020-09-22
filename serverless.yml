@@ -26,7 +26,7 @@ provider:
 
 # you can overwrite defaults here
 #  stage: dev
-#  region: us-east-1
+  region: ap-northeast-1
 
 # you can add statements to the Lambda function's IAM Role here
 #  iamRoleStatements:
@@ -55,11 +55,17 @@ provider:
 #    - include-me-dir/**
 #  exclude:
 #    - exclude-me.py
-#    - exclude-me-dir/**
-
+#    - exclude-me-dir/**  
+  
 functions:
-  hello:
-    handler: handler.hello
+  api:
+    handler: wsgi_handler.handler
+    events:
+      - http: ANY /
+      - http: ANY {proxy+}
+custom:
+  wsgi:
+    app: api.app
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
@@ -111,3 +117,7 @@ functions:
 #     NewOutput:
 #       Description: "Description for the output"
 #       Value: "Some output value"
+
+plugins:
+  - serverless-python-requirements
+  - serverless-wsgi
